@@ -1,0 +1,77 @@
+{
+  "slug": "2026-11-21-2fa-not-equal",
+  "source": "Source: CISA (cisa.gov/MFA, Phishing-Resistant MFA fact sheet)",
+  "slides": [
+    {
+      "type": "cover",
+      "pose": "suspicious",
+      "title": "Not all *2FA* is equal.",
+      "lines": [
+        "That text message code?",
+        "It's the *weakest* kind."
+      ]
+    },
+    {
+      "type": "bullets",
+      "pose": "thinking",
+      "title": "2FA = password + *one more proof.*",
+      "items": [
+        "Something you *know:* a password or PIN",
+        "Something you *have:* your phone or a key",
+        "Something you *are:* fingerprint or face"
+      ]
+    },
+    {
+      "type": "tiers",
+      "pose": "pointing",
+      "title": "From *strongest* to weakest:",
+      "tiers": [
+        {
+          "label": "STRONGEST",
+          "name": "Passkeys & security keys",
+          "note": "FIDO/WebAuthn. Phishing-resistant."
+        },
+        {
+          "label": "BETTER",
+          "name": "Authenticator apps",
+          "note": "Codes or prompts in an app on your phone."
+        },
+        {
+          "label": "LAST RESORT",
+          "name": "SMS or voice codes",
+          "note": "Better than nothing. Not by much."
+        }
+      ]
+    },
+    {
+      "type": "bullets",
+      "pose": "arms-crossed",
+      "title": "Why *text codes* are weak:",
+      "items": [
+        "*SIM swap:* someone moves your number to their phone",
+        "*Network flaws:* codes can be intercepted in transit",
+        "*Fake sites* can ask you to type the code in"
+      ]
+    },
+    {
+      "type": "bullets",
+      "pose": "pointing",
+      "title": "Any 2FA beats *no 2FA.*",
+      "items": [
+        "Turn it on for your *email* first",
+        "Switch to an *app or passkey* when offered",
+        "Save your *backup codes* somewhere safe"
+      ]
+    },
+    {
+      "type": "cta",
+      "pose": "thumbsup",
+      "title": "Check your *email* today.",
+      "lines": [
+        "Save this for later and share it with someone who still uses text codes."
+      ],
+      "button": "@pandabyte.tech",
+      "source": true
+    }
+  ]
+}
