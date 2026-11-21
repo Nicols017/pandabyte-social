@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pandabyte.tech/schemas/video-qa-report.schema.json",
+  "title": "VideoQAReport",
+  "description": "studio/qa.py writes it with verdict 'pending'; the Video Quality Agent (14) settles the review items and sets the final verdict. A clean render is never enough for 'pass'.",
+  "type": "object",
+  "required": ["schema", "verdict", "auto_verdict", "generated_at", "video", "checks"],
+  "properties": {
+    "schema": { "const": "video-qa-report/v1" },
+    "verdict": {
+      "enum": ["pending", "pass", "fail", "needs_owner"],
+      "description": "pass: no fail and every review item settled as pass. fail: back to 13 with fixes. needs_owner: a failed check only ships with the owner's written exception"
+    },
+    "auto_verdict": { "enum": ["pass", "fail", "review"] },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "tool": { "type": "object" },
+    "video": {
+      "type": "object",
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "type": "string" },
+        "sha256": { "type": "string" },
+        "duration_s": { "type": "number" }
+      }
+    },
+    "package": { "type": "string", "description": "VideoPackage slug and revision checked" },
+    "inputs": { "type": "object" },
+    "summary": { "type": "object", "additionalProperties": { "type": "integer" } },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "category", "status", "detail"],
+        "properties": {
+          "id": { "type": "string" },
+          "category": { "enum": ["technical", "spec", "license", "disclosure", "brand", "visual"] },
+          "status": { "enum": ["pass", "warn", "review", "fail", "skip"] },
+          "detail": { "type": "string" },
+          "value": {},
+          "expected": {},
+          "settled_by": { "enum": ["script", "agent-14", "owner"] },
+          "evidence": { "type": "string" }
+        }
+      }
+    },
+    "fixes": {
+      "type": "array",
+      "description": "Concrete instructions for 13 when verdict is fail",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "instruction"],
+        "properties": {
+          "check_id": { "type": "string" },
+          "instruction": { "type": "string" }
+        }
+      }
+    },
+    "owner_exception": {
+      "type": ["object", "null"],
+      "description": "Only with verdict needs_owner, filled after the owner answers",
+      "properties": {
+        "check_ids": { "type": "array", "items": { "type": "string" } },
+        "reason": { "type": "string" },
+        "approved": { "type": ["boolean", "null"] },
+        "approved_at": { "type": ["string", "null"] }
+      }
+    },
+    "next_agent": { "enum": ["13-video-production", "10-social", "owner", null] },
+    "artifacts": { "type": "object" }
+  }
+}

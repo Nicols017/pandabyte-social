@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pandabyte.tech/schemas/video-package.schema.json",
+  "title": "VideoPackage",
+  "description": "Delivered by the Video Production Agent (13) to the Video Quality Agent (14). Lists the rendered file, its storyboard, every asset with its license, the captions and links per platform.",
+  "type": "object",
+  "required": ["schema", "slug", "video", "storyboard", "platforms", "assets", "disclosure"],
+  "properties": {
+    "schema": { "const": "video-package/v1" },
+    "slug": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+$" },
+    "brief_id": { "type": "string", "description": "VideoBrief this package answers" },
+    "revision": { "type": "integer", "minimum": 1, "description": "Increments each time 14 sends the video back" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "video": {
+      "type": "object",
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "type": "string" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "duration_s": { "type": "number" }
+      }
+    },
+    "storyboard": { "type": "string", "description": "Path to storyboards/<slug>.json" },
+    "platforms": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": { "enum": ["tiktok", "instagram_reels", "youtube_shorts", "facebook_reels"] }
+    },
+    "caption": {
+      "description": "One caption for all platforms, or one per platform key",
+      "oneOf": [
+        { "type": "string" },
+        { "type": "object", "additionalProperties": { "type": "string" } }
+      ]
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["url", "affiliate"],
+        "properties": {
+          "url": { "type": "string" },
+          "affiliate": { "type": "boolean" },
+          "program": { "enum": ["amazon", "ebay", "bestbuy", "newegg", "rakuten", "none"] },
+          "where": { "enum": ["caption", "bio", "pinned_comment", "on_screen"] }
+        }
+      }
+    },
+    "disclosure": {
+      "type": "object",
+      "required": ["on_screen"],
+      "properties": {
+        "on_screen": { "type": ["string", "null"], "description": "Exact disclosure text shown in the video, null if the video has no commercial CTA" },
+        "spoken": { "type": "boolean" },
+        "caption": { "type": ["string", "null"] }
+      }
+    },
+    "assets": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "license"],
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "enum": ["image", "mascot", "font", "voice", "music", "sfx", "footage", "logo", "model", "icon", "other"] },
+          "path": { "type": "string" },
+          "source_url": { "type": "string" },
+          "license": { "type": "string", "description": "SPDX id when possible (Apache-2.0, MIT, CC0-1.0, CC-BY-4.0, OFL-1.1) or PandaByte-owned" },
+          "attribution": { "type": "string", "description": "Required for CC-BY licenses" },
+          "ai_generated": { "type": "boolean" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "paid"],
+        "properties": {
+          "name": { "type": "string" },
+          "license": { "type": "string" },
+          "paid": { "type": "boolean" },
+          "owner_approved": { "type": "boolean" }
+        }
+      }
+    },
+    "ai_generated": {
+      "type": "object",
+      "properties": {
+        "voice": { "type": "boolean" },
+        "visuals": { "type": "boolean" }
+      }
+    },
+    "notes": { "type": "string" }
+  }
+}
