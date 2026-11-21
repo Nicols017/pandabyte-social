@@ -1,0 +1,84 @@
+{
+ "schema": "video-package/v1",
+ "slug": "2026-11-22-what-is-vram",
+ "brief_id": "T-20261121-01",
+ "revision": 3,
+ "created_at": "2026-11-21T18:27:40+00:00",
+ "video": {
+  "path": "posts/2026-11-22-what-is-vram/2026-11-22-what-is-vram.mp4",
+  "sha256": "23fa8ecdce275604fa32bc775876a4fd6e77121ce12946008306f71dae88bb18",
+  "duration_s": 39.2
+ },
+ "storyboard": "storyboards/2026-11-22-what-is-vram.json",
+ "platforms": [
+  "tiktok",
+  "instagram_reels",
+  "youtube_shorts"
+ ],
+ "caption": {
+  "tiktok": "What is VRAM, and why does everyone talk about it? It's your graphics card's own memory: it holds textures and frame data, and higher resolutions use more of it. RTX 5060: 8 GB. Intel Arc B580: 12 GB. Radeon RX 9070: 16 GB (NVIDIA, Intel and AMD official specs). Compare the exact model's specs on pandabyte.tech. PandaByte may earn a commission from qualifying purchases. #VRAM #GPU #PCGaming #PCBuild #TechExplained",
+  "instagram_reels": "What is VRAM? Your graphics card's own memory.\n\nIt holds textures and frame data. Higher resolutions use more, and when it runs out, games can stutter.\n\nRTX 5060: 8 GB GDDR7\nIntel Arc B580: 12 GB\nRadeon RX 9070: 16 GB GDDR6\nSource: NVIDIA, Intel and AMD official specs.\n\nCompare the exact model's specs on pandabyte.tech.\nPandaByte may earn a commission from qualifying purchases.\n\n#VRAM #GPU #PCGaming #PCBuild #TechExplained",
+  "youtube_shorts_title": "What is VRAM? Your GPU's own memory, explained #Shorts",
+  "youtube_shorts": "VRAM is your graphics card's own memory. It holds textures and frame data, higher resolutions use more of it, and if it runs out, games can stutter.\n\nRTX 5060: 8 GB GDDR7 · Intel Arc B580: 12 GB · Radeon RX 9070: 16 GB GDDR6\nSources: NVIDIA https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5060-family/ · Intel Arc B-Series Quick Reference Guide v1.1 · AMD https://www.amd.com/en/products/graphics/desktops/radeon/9000-series/amd-radeon-rx-9070.html\n\nCompare the exact model's specs on pandabyte.tech.\nPandaByte may earn a commission from qualifying purchases.\n\n#VRAM #GPU #PCGaming"
+ },
+ "links": [
+  {
+   "url": "https://pandabyte.tech",
+   "affiliate": false,
+   "program": "none",
+   "where": "caption"
+  }
+ ],
+ "disclosure": {
+  "on_screen": "PandaByte may earn a commission from qualifying purchases.",
+  "spoken": true,
+  "caption": "PandaByte may earn a commission from qualifying purchases."
+ },
+ "assets": [
+  {
+   "id": "nibble-poses",
+   "type": "mascot",
+   "path": "assets/nibble/{surprised,thinking,pointing,suspicious,thumbsup}.png",
+   "license": "Canva Content License (non-exclusive) + AI-derived poses",
+   "ai_generated": true,
+   "notes": "LICENSES.md row still 'pending'; owner-approved provisional exception, Nicols017/pandabyte#8 (2026-11-21). Not trademarkable, not exclusive."
+  },
+  {
+   "id": "voice-kokoro-am_puck",
+   "type": "voice",
+   "source_url": "https://huggingface.co/hexgrad/Kokoro-82M",
+   "license": "Apache-2.0",
+   "ai_generated": true,
+   "notes": "Synthetic voice, not a clone of a real person. LICENSES.md: ok"
+  },
+  {
+   "id": "font-poppins-bold",
+   "type": "font",
+   "license": "OFL-1.1",
+   "source_url": "https://fonts.google.com/specimen/Poppins"
+  },
+  {
+   "id": "font-inter",
+   "type": "font",
+   "license": "OFL-1.1",
+   "source_url": "https://fonts.google.com/specimen/Inter"
+  }
+ ],
+ "tools": [
+  {
+   "name": "FFmpeg",
+   "license": "LGPL-2.1+",
+   "paid": false
+  },
+  {
+   "name": "studio/render.py (Pillow, NumPy, soundfile, kokoro-onnx)",
+   "license": "MIT/BSD/Apache-2.0",
+   "paid": false
+  }
+ ],
+ "ai_generated": {
+  "voice": true,
+  "visuals": true
+ },
+ "notes": "Specs: geforce-rtx-5060 = 8 GB GDDR7 (NVIDIA rtx-5060-family page); intel-arc-b580 = 12 GB (Intel Arc B-Series QRG v1.1, cdrdv2-public.intel.com/839907); amd-radeon-rx-9070 = 16 GB GDDR6 (AMD product page). All three are reviewed records in pandabyte data/catalog/graphics-cards.json. No price, no performance claim, no retailer link. Captions are burned in; transcript = storyboard 'say' lines. | Revisions 2-3 (2026-11-21): captions, titles and Nibble inside safe area; loudnorm -14 LUFS, 48 kHz (fixes from QA #11). Rev 3: captions centered in the safe area with stroke counted; disclosure 28 px, source 30 px."
+}

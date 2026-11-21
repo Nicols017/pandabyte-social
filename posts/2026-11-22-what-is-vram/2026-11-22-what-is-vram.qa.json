@@ -1,0 +1,289 @@
+{
+  "schema": "video-qa-report/v1",
+  "verdict": "pending",
+  "auto_verdict": "review",
+  "generated_at": "2026-11-21T18:27:52+00:00",
+  "tool": {
+    "name": "studio/qa.py",
+    "ffmpeg": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers"
+  },
+  "video": {
+    "path": "build/2026-11-22-what-is-vram/2026-11-22-what-is-vram.mp4",
+    "sha256": "23fa8ecdce275604fa32bc775876a4fd6e77121ce12946008306f71dae88bb18",
+    "duration_s": 39.2
+  },
+  "inputs": {
+    "storyboard": "storyboards/2026-11-22-what-is-vram.json",
+    "package": "build/2026-11-22-what-is-vram/package.json",
+    "catalog": "../pandabyte/data/catalog"
+  },
+  "summary": {
+    "pass": 30,
+    "warn": 0,
+    "review": 4,
+    "fail": 0,
+    "skip": 0
+  },
+  "checks": [
+    {
+      "id": "container",
+      "category": "technical",
+      "status": "pass",
+      "detail": "MP4 container",
+      "value": "mov,mp4,m4a,3gp,3g2,mj2",
+      "expected": "mp4"
+    },
+    {
+      "id": "faststart",
+      "category": "technical",
+      "status": "pass",
+      "detail": "moov atom before mdat (+faststart)",
+      "value": [
+        "ftyp",
+        "moov",
+        "free",
+        "mdat"
+      ]
+    },
+    {
+      "id": "file_size",
+      "category": "technical",
+      "status": "pass",
+      "detail": "File size (MB)",
+      "value": 3.5,
+      "expected": "<= 250"
+    },
+    {
+      "id": "video_codec",
+      "category": "technical",
+      "status": "pass",
+      "detail": "H.264 video",
+      "value": "h264",
+      "expected": "h264"
+    },
+    {
+      "id": "pixel_format",
+      "category": "technical",
+      "status": "pass",
+      "detail": "8-bit 4:2:0",
+      "value": "yuv420p",
+      "expected": "yuv420p"
+    },
+    {
+      "id": "resolution",
+      "category": "technical",
+      "status": "pass",
+      "detail": "Vertical 9:16",
+      "value": "1080x1920",
+      "expected": "1080x1920"
+    },
+    {
+      "id": "sar",
+      "category": "technical",
+      "status": "pass",
+      "detail": "Square pixels",
+      "value": "1:1",
+      "expected": "1:1"
+    },
+    {
+      "id": "frame_rate",
+      "category": "technical",
+      "status": "pass",
+      "detail": "Constant frame rate",
+      "value": {
+        "r": 30.0,
+        "avg": 30.0
+      },
+      "expected": 30
+    },
+    {
+      "id": "audio_codec",
+      "category": "technical",
+      "status": "pass",
+      "detail": "AAC audio",
+      "value": "aac",
+      "expected": "aac"
+    },
+    {
+      "id": "sample_rate",
+      "category": "technical",
+      "status": "pass",
+      "detail": "Sample rate (Hz)",
+      "value": 48000,
+      "expected": ">= 44100"
+    },
+    {
+      "id": "av_sync_length",
+      "category": "technical",
+      "status": "pass",
+      "detail": "Audio/video stream length difference (s)",
+      "value": 0.0,
+      "expected": "<= 0.5"
+    },
+    {
+      "id": "duration",
+      "category": "technical",
+      "status": "pass",
+      "detail": "Duration (s)",
+      "value": 39.2,
+      "expected": "15.0-60.0 target, 5.0-180.0 hard"
+    },
+    {
+      "id": "decode_errors",
+      "category": "technical",
+      "status": "pass",
+      "detail": "Full decode without errors",
+      "value": 0,
+      "expected": 0
+    },
+    {
+      "id": "loudness",
+      "category": "technical",
+      "status": "pass",
+      "detail": "Integrated loudness (LUFS)",
+      "value": -15.7,
+      "expected": "-16.0 to -12.0"
+    },
+    {
+      "id": "true_peak",
+      "category": "technical",
+      "status": "pass",
+      "detail": "True peak (dBTP)",
+      "value": -1.4,
+      "expected": "<= -1.0"
+    },
+    {
+      "id": "lead_silence",
+      "category": "technical",
+      "status": "pass",
+      "detail": "Silence before the hook (s)",
+      "value": 0.0,
+      "expected": "<= 0.5"
+    },
+    {
+      "id": "mid_silence",
+      "category": "technical",
+      "status": "pass",
+      "detail": "Longest gap below -50 dB inside the video (s)",
+      "value": 0.0,
+      "expected": "< 1.0"
+    },
+    {
+      "id": "black_frames",
+      "category": "technical",
+      "status": "pass",
+      "detail": "Black segments >= 0.5s",
+      "value": 0
+    },
+    {
+      "id": "frozen_frames",
+      "category": "technical",
+      "status": "pass",
+      "detail": "Frozen segments >= 4.0s",
+      "value": 0
+    },
+    {
+      "id": "safe_zone_visual",
+      "category": "visual",
+      "status": "review",
+      "detail": "Look at the contact sheet: no caption, title, price or disclosure outside the red safe-area box; Nibble and text legible",
+      "value": "build/2026-11-22-what-is-vram/2026-11-22-what-is-vram.qa.png"
+    },
+    {
+      "id": "source_line",
+      "category": "spec",
+      "status": "pass",
+      "detail": "On-screen source for data scenes",
+      "value": "Source: NVIDIA, Intel and AMD official specs"
+    },
+    {
+      "id": "spec_s3_bar1",
+      "category": "spec",
+      "status": "pass",
+      "detail": "GeForce RTX 5060: 8 GB matches catalog \"geforce-rtx-5060\" -> Memory: 8 GB GDDR7"
+    },
+    {
+      "id": "spec_s3_bar2",
+      "category": "spec",
+      "status": "pass",
+      "detail": "Intel Arc B580: 12 GB matches catalog \"intel-arc-b580\" -> Memory: 12 GB"
+    },
+    {
+      "id": "spec_s3_bar3",
+      "category": "spec",
+      "status": "pass",
+      "detail": "Radeon RX 9070: 16 GB matches catalog \"amd-radeon-rx-9070\" -> Memory: 16 GB GDDR6"
+    },
+    {
+      "id": "spoken_claims",
+      "category": "spec",
+      "status": "review",
+      "detail": "Read every \"say\" line: spoken numbers and model names must match the screen and the catalog"
+    },
+    {
+      "id": "disclosure_on_screen",
+      "category": "disclosure",
+      "status": "pass",
+      "detail": "Affiliate disclosure shown on screen in the CTA",
+      "value": "PandaByte may earn a commission from qualifying purchases."
+    },
+    {
+      "id": "disclosure_spoken",
+      "category": "disclosure",
+      "status": "pass",
+      "detail": "Disclosure also spoken",
+      "value": "Compare the specs at PandaByte dot tech. We may earn a commission, but rankings are never paid."
+    },
+    {
+      "id": "voice",
+      "category": "brand",
+      "status": "pass",
+      "detail": "Nibble voice (Kokoro am_puck)",
+      "value": "am_puck",
+      "expected": "am_puck"
+    },
+    {
+      "id": "package_hash",
+      "category": "license",
+      "status": "pass",
+      "detail": "Video file is the one listed in the package"
+    },
+    {
+      "id": "license_nibble-poses",
+      "category": "license",
+      "status": "review",
+      "detail": "nibble-poses (mascot): license not on the allowlist; read its terms",
+      "value": "Canva Content License (non-exclusive) + AI-derived poses"
+    },
+    {
+      "id": "license_voice-kokoro-am_puck",
+      "category": "license",
+      "status": "pass",
+      "detail": "voice-kokoro-am_puck (voice): license allows commercial use",
+      "value": "Apache-2.0"
+    },
+    {
+      "id": "license_font-poppins-bold",
+      "category": "license",
+      "status": "pass",
+      "detail": "font-poppins-bold (font): license allows commercial use",
+      "value": "OFL-1.1"
+    },
+    {
+      "id": "license_font-inter",
+      "category": "license",
+      "status": "pass",
+      "detail": "font-inter (font): license allows commercial use",
+      "value": "OFL-1.1"
+    },
+    {
+      "id": "ai_label",
+      "category": "disclosure",
+      "status": "review",
+      "detail": "Synthetic voice/visuals: decide per platform whether the AI-generated label is required"
+    }
+  ],
+  "artifacts": {
+    "contact_sheet": "build/2026-11-22-what-is-vram/2026-11-22-what-is-vram.qa.png"
+  }
+}

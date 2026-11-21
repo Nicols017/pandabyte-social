@@ -25,6 +25,8 @@ CACHE = Path(os.environ.get('PANDABYTE_STUDIO_CACHE', Path.home() / '.cache' / '
 MODEL_URL = 'https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/'
 
 W, H, FPS = 1080, 1920, 30
+SAFE_L, SAFE_R, SAFE_T, SAFE_B = 60, 960, 220, 1500  # platform safe area (see studio/qa.py)
+SAFE_W = SAFE_R - SAFE_L
 BG = (18, 18, 20)
 ORANGE = (255, 138, 61)
 WHITE = (245, 245, 247)
@@ -172,17 +174,21 @@ def title(layer, text, t, y=230, size=96, start=0.05):
     p = ease_out(prog(t, start, 0.45))
     if p <= 0: return y
     off = int((1 - p) * 40)
-    return draw_rich(layer, 70, y + off, text, H1(size), W - 140, int(size * 1.18), alpha=int(255 * p))
+    return draw_rich(layer, 70, y + off, text, H1(size), SAFE_R - 10 - 70, int(size * 1.18), alpha=int(255 * p))
 
 def caption(layer, cues, t):
     cur = next((c for c in cues if c[0] <= t < c[1]), None)
     if not cur: return
     d = ImageDraw.Draw(layer)
-    fnt = H1(66)
     words = cur[2].split()
-    sp = d.textlength(' ', font=fnt)
-    tw = sum(d.textlength(w, font=fnt) for w in words) + sp * (len(words) - 1)
-    x = (W - tw) / 2; y = 1430
+    size = 62  # shrink to fit the safe area (x 60..960, bottom <= 1500)
+    while True:
+        fnt = H1(size)
+        sp = d.textlength(' ', font=fnt)
+        tw = sum(d.textlength(w, font=fnt) for w in words) + sp * (len(words) - 1)
+        if tw + 2 * 8 <= SAFE_W - 40 or size <= 40: break  # 8 px stroke on each side
+        size -= 2
+    x = SAFE_L + (SAFE_W - tw) / 2; y = 1400  # centered in the safe area, not the frame
     pop = back_out(prog(t, cur[0], 0.12))
     y += int((1 - pop) * 14)
     for w in words:
@@ -192,7 +198,7 @@ def caption(layer, cues, t):
 
 def footer_source(layer, text):
     if text:
-        ImageDraw.Draw(layer).text((70, 1330), text, font=BODY(26), fill=GRAY + (255,))
+        ImageDraw.Draw(layer).text((70, 1330), text, font=BODY(30), fill=GRAY + (255,))
 
 # ---------- scene types ----------
 def scene_hook(L, sc, t):
@@ -217,13 +223,13 @@ def scene_stat(L, sc, t):
     d.text((70, y + 40), txt, font=H1(190), fill=ORANGE + (int(255 * clamp(p * 2)),))
     if sc.get('label'):
         draw_rich(L, 70, y + 290, sc['label'], BODY(48), W - 140, 64, alpha=int(255 * ease_out(prog(t, 0.6, 0.4))))
-    paste_pose(L, sc.get('pose', 'pointing'), W - 250, 1300, 430, t, 0.3)
+    paste_pose(L, sc.get('pose', 'pointing'), W - 290, 1300, 430, t, 0.3)
 
 def scene_bars(L, sc, t):
     y = title(L, sc['title'], t) + 40
     d = ImageDraw.Draw(L)
     bars = sc['bars']; vmax = max(b['value'] for b in bars)
-    maxw = W - 140 - 430
+    maxw = W - 140 - 500
     for i, b in enumerate(bars):
         p = ease_out(prog(t, 0.45 + i * 0.35, 0.7))
         a = int(255 * clamp(prog(t, 0.35 + i * 0.35, 0.2)))
@@ -233,7 +239,7 @@ def scene_bars(L, sc, t):
         d.rounded_rectangle((70, y + 62, 70 + w, y + 142), radius=22, fill=col + (a,))
         d.text((70 + w + 24, y + 102), f"{b['value'] * p:.0f} {b.get('unit', '')}".strip(), font=H1(58), fill=WHITE + (a,), anchor='lm')
         y += 190
-    paste_pose(L, sc.get('pose', 'pointing'), W - 190, 1310, 330, t, 0.3)
+    paste_pose(L, sc.get('pose', 'pointing'), W - 260, 1310, 330, t, 0.3)
 
 def scene_compare(L, sc, t):
     y = title(L, sc['title'], t) + 30
@@ -251,7 +257,7 @@ def scene_compare(L, sc, t):
         d.text((ca, y + 38 + off), row[1], font=H1(44), fill=WHITE + (a,), anchor='mm')
         d.text((cb, y + 38 + off), row[2], font=H1(44), fill=(WHITE if same else ORANGE) + (a,), anchor='mm')
         y += 128
-    paste_pose(L, sc.get('pose', 'thinking'), W - 220, 1300, 380, t, 0.3)
+    paste_pose(L, sc.get('pose', 'thinking'), W - 270, 1300, 380, t, 0.3)
 
 def scene_bullets(L, sc, t):
     y = title(L, sc['title'], t) + 30
@@ -262,7 +268,7 @@ def scene_bullets(L, sc, t):
         d.text((100 + off, y + 36), str(i + 1), font=H1(36), fill=BG + (a,), anchor='mm')
         draw_rich(L, 160 + off, y + 4, it, BOLD(46), W - 260, 60, alpha=a)
         y += 130
-    paste_pose(L, sc.get('pose', 'pointing'), W - 220, 1300, 380, t, 0.3)
+    paste_pose(L, sc.get('pose', 'pointing'), W - 270, 1300, 380, t, 0.3)
 
 def scene_cta(L, sc, t):
     y = title(L, sc['title'], t, y=300, size=100)
@@ -275,7 +281,7 @@ def scene_cta(L, sc, t):
         if p > 0.6:
             d.text((cx, cy), sc.get('button', 'pandabyte.tech'), font=H1(58), fill=BG + (255,), anchor='mm')
     if sc.get('disclosure'):
-        ImageDraw.Draw(L).text((W // 2, 1330), sc['disclosure'], font=BODY(26), fill=GRAY + (255,), anchor='mm')
+        ImageDraw.Draw(L).text((SAFE_L + SAFE_W // 2, 1330), sc['disclosure'], font=BODY(28), fill=GRAY + (255,), anchor='mm')
     paste_pose(L, sc.get('pose', 'thumbsup'), W // 2, 1290, 560, t, 0.25)
 
 SCENES = {'hook': scene_hook, 'stat': scene_stat, 'bars': scene_bars, 'compare': scene_compare,
@@ -328,7 +334,8 @@ def render(sb_path, stills=False):
                     '-c', 'copy', str(out / 'video-only.mp4')], check=True)
     final = out / f'{slug}.mp4'; tmp = out / f'{slug}.tmp.mp4'
     subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-i', str(out / 'video-only.mp4'), '-i', str(out / 'narration.wav'),
-                    '-map', '0:v', '-map', '1:a', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '160k', '-shortest',
+                    '-map', '0:v', '-map', '1:a', '-c:v', 'copy', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-ar', '48000',
+                    '-c:a', 'aac', '-b:a', '160k', '-shortest',
                     '-movflags', '+faststart', str(tmp)], check=True)
     tmp.rename(final)
     print('done:', final, f'{offset:.1f}s')
