@@ -1,0 +1,23 @@
+{
+  "slug": "2026-11-22-what-is-vram",
+  "series": "Spec explained",
+  "voice": "am_puck",
+  "speed": 1.0,
+  "source": "Source: NVIDIA, Intel and AMD official specs",
+  "scenes": [
+    {"type": "hook", "pose": "surprised", "title": "What is *VRAM?*", "subtitle": "And why everyone talks about it.",
+     "say": ["What is VRAM?", "And why does everyone talk about it?"]},
+    {"type": "bullets", "pose": "thinking", "title": "VRAM is your GPU's *own memory.*",
+     "items": ["It holds *textures* and frame data", "Higher *resolution* uses more", "Run out, and games can *stutter*"],
+     "say": ["VRAM is your graphics card's own memory.", "It holds textures and frame data.", "Higher resolutions and texture settings use more of it.", "And if it runs out, games can stutter."]},
+    {"type": "bars", "pose": "pointing", "title": "Three cards on *PandaByte:*",
+     "bars": [{"label": "GeForce RTX 5060", "value": 8, "unit": "GB"}, {"label": "Intel Arc B580", "value": 12, "unit": "GB"}, {"label": "Radeon RX 9070", "value": 16, "unit": "GB", "highlight": true}],
+     "say": ["Here are three cards on PandaByte.", "RTX 5060: eight gigabytes.", "Intel Arc B580: twelve.", "Radeon RX 9070: sixteen."]},
+    {"type": "bullets", "pose": "suspicious", "title": "So how much do *you* need?",
+     "items": ["Check your games' *requirements*", "Match it to your *resolution*", "Compare the *exact* model"],
+     "say": ["So, how much do you need?", "Check your games' requirements.", "Match it to your resolution.", "And compare the exact model."]},
+    {"type": "cta", "pose": "thumbsup", "title": "Compare VRAM on *PandaByte.*", "button": "pandabyte.tech",
+     "disclosure": "PandaByte may earn a commission from qualifying purchases.",
+     "say": ["Compare the specs at PandaByte dot tech.", "We may earn a commission, but rankings are never paid."]}
+  ]
+}
