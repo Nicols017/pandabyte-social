@@ -1,0 +1,108 @@
+{
+  "schema": "video-package/v1",
+  "slug": "2026-11-22-same-name-different-card",
+  "brief_id": "#30",
+  "revision": 1,
+  "created_at": "2026-11-22T13:10:58+00:00",
+  "video": {
+    "path": "2026-11-22-same-name-different-card.mp4",
+    "sha256": "fc5946932d0d65e71d7d05b36d4b60f58e49d54d3c151eda1bffcf15491b1e63",
+    "duration_s": 34.133
+  },
+  "storyboard": "storyboards/2026-11-22-same-name-different-card.json",
+  "platforms": [
+    "tiktok",
+    "instagram_reels",
+    "youtube_shorts"
+  ],
+  "caption": {
+    "tiktok": "Almost the same name on the box. Not the same card. AMD lists the Radeon RX 7600 with 8 GB of memory and the RX 7600 XT with 16 GB (AMD official specs). Always check the memory, not just the name.\n\nSend this to the friend who's buying a GPU this week.\n\nPandaByte may earn a commission from qualifying purchases. Rankings are never paid. AI voice and animation.\n#gpu #pcbuild #techtok #vram",
+    "instagram_reels": "Almost the same name on the box. Not the same card. AMD lists the Radeon RX 7600 with 8 GB of memory and the RX 7600 XT with 16 GB (AMD official specs). Always check the memory, not just the name.\n\nSend this to the friend who's buying a GPU this week. Compare both, new only, at pandabyte.tech.\n\nPandaByte may earn a commission from qualifying purchases. Rankings are never paid. AI voice and animation.\n#gpu #vram #pcbuild #pcgaming #graphicscard",
+    "youtube_shorts": "Almost the same name on the box. Not the same card. AMD lists the Radeon RX 7600 with 8 GB of memory and the RX 7600 XT with 16 GB (AMD official specs). Always check the memory, not just the name.\n\nSend this to the friend who's buying a GPU this week. Compare both, new only, at pandabyte.tech.\n\nSource: AMD official specs for the Radeon RX 7600 and RX 7600 XT. Memory only; no performance claims.\n\nPandaByte may earn a commission from qualifying purchases. Rankings are never paid. AI voice and animation."
+  },
+  "links": [
+    {
+      "url": "https://pandabyte.tech",
+      "affiliate": false,
+      "program": "none",
+      "where": "on_screen"
+    }
+  ],
+  "disclosure": {
+    "on_screen": "PandaByte may earn a commission from qualifying purchases. Rankings are never paid.",
+    "spoken": true,
+    "caption": "PandaByte may earn a commission from qualifying purchases. Rankings are never paid."
+  },
+  "assets": [
+    {
+      "id": "nibble-poses",
+      "type": "mascot",
+      "path": "assets/nibble/",
+      "license": "PandaByte-owned (provisional)",
+      "ai_generated": true,
+      "notes": "Owner-approved provisional use (Canva art + derived poses). Rights confirmation still pending in assets/LICENSES.md."
+    },
+    {
+      "id": "voice-elevenlabs-dan",
+      "type": "voice",
+      "source_url": "https://elevenlabs.io",
+      "license": "ElevenLabs Starter plan (commercial license)",
+      "ai_generated": true,
+      "notes": "Voice 'Dan - Friendly, Relaxed & Real' (voice_id XA3P1cj7XJexe6Zq0ATX), model eleven_v4, generated 2026-11-22 on the owner's Starter plan. Synthetic voice, not a clone of a real person."
+    },
+    {
+      "id": "font-poppins-bold",
+      "type": "font",
+      "source_url": "https://fonts.google.com/specimen/Poppins",
+      "license": "OFL-1.1"
+    },
+    {
+      "id": "font-inter",
+      "type": "font",
+      "source_url": "https://fonts.google.com/specimen/Inter",
+      "license": "OFL-1.1"
+    },
+    {
+      "id": "sfx-studio",
+      "type": "sfx",
+      "path": "studio/sfx.py",
+      "license": "PandaByte-owned",
+      "notes": "Synthesized in code at render time; no samples."
+    },
+    {
+      "id": "drawn-props",
+      "type": "other",
+      "path": "studio/render.py",
+      "license": "PandaByte-owned",
+      "notes": "Generic GPU, boxes and the fictional listing are drawn in code; no logos, no retailer branding."
+    }
+  ],
+  "tools": [
+    {
+      "name": "ElevenLabs",
+      "license": "Starter plan, commercial use",
+      "paid": true,
+      "owner_approved": true
+    },
+    {
+      "name": "FFmpeg",
+      "paid": false
+    },
+    {
+      "name": "Pillow / NumPy",
+      "paid": false
+    }
+  ],
+  "ai_generated": {
+    "voice": true,
+    "visuals": true
+  },
+  "files": {
+    "cover": "cover.jpg",
+    "cover_small": "cover-270x480.jpg",
+    "srt": "2026-11-22-same-name-different-card.srt",
+    "transcript": "2026-11-22-same-name-different-card.transcript.txt"
+  },
+  "notes": "Pair RX 7600 / RX 7600 XT (8 GB / 16 GB GDDR6, AMD). Platform AI label to be switched on in all 3 networks; YouTube 'altered or synthetic content' as applicable.",
+  "youtube_shorts_title": "Same GPU name, different card: 8GB vs 16GB explained #Shorts"
+}

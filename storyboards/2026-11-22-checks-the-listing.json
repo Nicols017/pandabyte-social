@@ -1,0 +1,309 @@
+{
+  "slug": "2026-11-22-checks-the-listing",
+  "series": "Nibble Checks the Listing - Ep. 1",
+  "voice": "am_puck",
+  "speed": 1.0,
+  "source": "Source: NVIDIA, GeForce RTX 5060 Ti official specs",
+  "notes": "The listing is FICTIONAL (drawn in studio/render.py): no real store, retailer brand, logo or price. Loop: the last line ('Now, look again:') runs into the first ('Three red flags in this listing').",
+  "cover": {
+    "text": "3 RED *FLAGS?*",
+    "pose": "surprised",
+    "y": 300,
+    "size": 176,
+    "pose_height": 770,
+    "pose_x": 620,
+    "pose_bottom": 1640
+  },
+  "scenes": [
+    {
+      "type": "game",
+      "title": "*3* red flags. Can you spot them?",
+      "poses": [
+        [
+          "suspicious",
+          0
+        ]
+      ],
+      "listing": {
+        "title": "RTX 5060 Ti Graphics Card",
+        "condition": "Open box",
+        "badge": "40% OFF",
+        "was_label": "Was"
+      },
+      "countdown": {
+        "at": "@1",
+        "seconds": 2.0,
+        "text": "FIND THE 3 RED FLAGS"
+      },
+      "say": [
+        {
+          "text": "Three red flags in this listing. Can you spot them?"
+        },
+        {
+          "pause": 2.0
+        }
+      ],
+      "stills": [
+        1.2,
+        "@1+0.9"
+      ]
+    },
+    {
+      "type": "game",
+      "continue": true,
+      "title": "Red flag *1*: the condition.",
+      "poses": [
+        [
+          "pointing",
+          0
+        ]
+      ],
+      "listing": {
+        "title": "RTX 5060 Ti Graphics Card",
+        "condition": "Open box",
+        "badge": "40% OFF",
+        "was_label": "Was"
+      },
+      "flags": [
+        {
+          "target": "condition",
+          "at": "@0+0.5"
+        }
+      ],
+      "say": [
+        "Red flag one: open box.",
+        "That's not brand new."
+      ]
+    },
+    {
+      "type": "game",
+      "continue": true,
+      "title": "Red flag *2*: how much memory?",
+      "source": "Source: NVIDIA, GeForce RTX 5060 Ti official specs",
+      "poses": [
+        [
+          "thinking",
+          0
+        ],
+        [
+          "gpu",
+          "@1"
+        ]
+      ],
+      "listing": {
+        "title": "RTX 5060 Ti Graphics Card",
+        "condition": "Open box",
+        "badge": "40% OFF",
+        "was_label": "Was"
+      },
+      "flags": [
+        {
+          "target": "condition",
+          "at": 0
+        },
+        {
+          "target": "title",
+          "at": "@0+0.8"
+        }
+      ],
+      "say": [
+        {
+          "text": "Two: it says RTX 5060 Ti. How much memory?",
+          "speak": "Two: it says R T X fifty-sixty T I. How much memory?"
+        },
+        "NVIDIA makes it in two memory sizes."
+      ]
+    },
+    {
+      "type": "game",
+      "continue": true,
+      "title": "Red flag *3*: 40% off... what?",
+      "poses": [
+        [
+          "suspicious",
+          0
+        ]
+      ],
+      "listing": {
+        "title": "RTX 5060 Ti Graphics Card",
+        "condition": "Open box",
+        "badge": "40% OFF",
+        "was_label": "Was"
+      },
+      "flags": [
+        {
+          "target": "condition",
+          "at": 0
+        },
+        {
+          "target": "title",
+          "at": 0
+        },
+        {
+          "target": "badge",
+          "at": "@0+0.6"
+        }
+      ],
+      "say": [
+        "Three: forty percent off.",
+        "Off what? There's no real price."
+      ]
+    },
+    {
+      "type": "game",
+      "continue": true,
+      "title": "Nibble's *verdict:*",
+      "poses": [
+        [
+          "arms-crossed",
+          0
+        ]
+      ],
+      "listing": {
+        "title": "RTX 5060 Ti Graphics Card",
+        "condition": "Open box",
+        "badge": "40% OFF",
+        "was_label": "Was"
+      },
+      "flags": [
+        {
+          "target": "condition",
+          "at": 0
+        },
+        {
+          "target": "title",
+          "at": 0
+        },
+        {
+          "target": "badge",
+          "at": 0
+        }
+      ],
+      "stamp": {
+        "text": "WALK AWAY",
+        "at": "@0e-0.7"
+      },
+      "say": [
+        "If the listing hides the memory or the condition, Nibble walks away."
+      ]
+    },
+    {
+      "type": "cta",
+      "title": "How many did you *catch?*",
+      "poses": [
+        [
+          "pointing",
+          0
+        ],
+        [
+          "thumbsup",
+          "@1"
+        ]
+      ],
+      "comment": "I caught...",
+      "comment_at": "@0+0.6",
+      "button": "pandabyte.tech",
+      "button_at": "@1",
+      "disclosure": "PandaByte may earn a commission from qualifying purchases. Rankings are never paid.",
+      "footnote": "New products only. Listing shown is fictional.",
+      "say": [
+        "How many did you catch? Comment the number.",
+        {
+          "text": "We list new cards only, and may earn a commission.",
+          "speak": "We list new cards only, and may earn a commission."
+        },
+        "Now, look again:"
+      ]
+    }
+  ],
+  "vo": {
+    "provider": "elevenlabs",
+    "voice_name": "Dan - Friendly, Relaxed & Real",
+    "voice_id": "XA3P1cj7XJexe6Zq0ATX",
+    "model": "eleven_v4",
+    "plan": "Starter (commercial license)",
+    "generated": "2026-11-22",
+    "prefix": "v1s"
+  },
+  "package": {
+    "brief_id": "#30",
+    "platforms": [
+      "tiktok",
+      "instagram_reels"
+    ],
+    "links": [
+      {
+        "url": "https://pandabyte.tech",
+        "affiliate": false,
+        "program": "none",
+        "where": "on_screen"
+      }
+    ],
+    "caption_disclosure": "PandaByte may earn a commission from qualifying purchases. Rankings are never paid.",
+    "assets": [
+      {
+        "id": "nibble-poses",
+        "type": "mascot",
+        "path": "assets/nibble/",
+        "license": "PandaByte-owned (provisional)",
+        "ai_generated": true,
+        "notes": "Owner-approved provisional use (Canva art + derived poses). Rights confirmation still pending in assets/LICENSES.md."
+      },
+      {
+        "id": "voice-elevenlabs-dan",
+        "type": "voice",
+        "source_url": "https://elevenlabs.io",
+        "license": "ElevenLabs Starter plan (commercial license)",
+        "ai_generated": true,
+        "notes": "Voice 'Dan - Friendly, Relaxed & Real' (voice_id XA3P1cj7XJexe6Zq0ATX), model eleven_v4, generated 2026-11-22 on the owner's Starter plan. Synthetic voice, not a clone of a real person."
+      },
+      {
+        "id": "font-poppins-bold",
+        "type": "font",
+        "source_url": "https://fonts.google.com/specimen/Poppins",
+        "license": "OFL-1.1"
+      },
+      {
+        "id": "font-inter",
+        "type": "font",
+        "source_url": "https://fonts.google.com/specimen/Inter",
+        "license": "OFL-1.1"
+      },
+      {
+        "id": "sfx-studio",
+        "type": "sfx",
+        "path": "studio/sfx.py",
+        "license": "PandaByte-owned",
+        "notes": "Synthesized in code at render time; no samples."
+      },
+      {
+        "id": "drawn-props",
+        "type": "other",
+        "path": "studio/render.py",
+        "license": "PandaByte-owned",
+        "notes": "Generic GPU, boxes and the fictional listing are drawn in code; no logos, no retailer branding."
+      }
+    ],
+    "tools": [
+      {
+        "name": "ElevenLabs",
+        "license": "Starter plan, commercial use",
+        "paid": true,
+        "owner_approved": true
+      },
+      {
+        "name": "FFmpeg",
+        "paid": false
+      },
+      {
+        "name": "Pillow / NumPy",
+        "paid": false
+      }
+    ],
+    "caption": {
+      "tiktok": "Three red flags in this GPU listing. How many did you catch? Comment the number.\n\nThe listing is fictional. Nibble only counts brand-new cards with the memory and the condition spelled out.\n\nPandaByte may earn a commission from qualifying purchases. Rankings are never paid. AI voice and animation.\n#gpu #pcbuild #techtok #graphicscard",
+      "instagram_reels": "Three red flags in this GPU listing. How many did you catch? Comment the number.\n\nThe listing is fictional. If a listing hides the memory or the condition, Nibble walks away. Compare new GPUs at pandabyte.tech.\n\nPandaByte may earn a commission from qualifying purchases. Rankings are never paid. AI voice and animation.\n#gpu #pcbuild #pcgaming #graphicscard #techtips"
+    },
+    "notes": "Fictional listing (no store, brand or price). Platform AI label must be switched on in TikTok and Instagram when scheduling."
+  }
+}

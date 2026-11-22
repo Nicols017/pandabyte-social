@@ -229,7 +229,7 @@ def storyboard(sb_path, catalog):
     scenes = sb.get('scenes', [])
     recs = load_catalog(catalog) if catalog and Path(catalog).is_dir() else []
     if not recs: add('catalog', 'spec', 'review', f'Catalog not found at {catalog}; spec claims must be checked by hand')
-    data_scene = any(s.get('type') in ('stat', 'bars', 'compare') for s in scenes)
+    data_scene = any(s.get('type') in ('stat', 'bars', 'compare', 'versus') for s in scenes)
     if data_scene:
         add('source_line', 'spec', 'pass' if (sb.get('source') or '').strip() else 'fail', 'On-screen source for data scenes', sb.get('source'))
     for i, s in enumerate(scenes, 1):
@@ -245,21 +245,31 @@ def storyboard(sb_path, catalog):
                     nu = num_units(cell)
                     if nu: check_value(col, nu[0][0], nu[0][1], recs, f'spec_s{i}_r{j}_{k}')
                     else: add(f'spec_s{i}_r{j}_{k}', 'spec', 'review', f'Verify by hand: {col} / {row[0]} = {cell}')
+        elif t == 'versus' and recs:
+            for side in ('left', 'right'):
+                info = s.get(side) or {}
+                nu = num_units(str(info.get('value', '')))
+                if nu: check_value(info.get('name', ''), nu[0][0], nu[0][1], recs, f'spec_s{i}_{side}')
+        elif t == 'game':
+            add(f'listing_s{i}', 'spec', 'review', 'Game scene: listing must be visibly fictional (no real store, retailer brand, logo or price)')
         elif t == 'stat':
             add(f'spec_s{i}_stat', 'spec', 'review', f'Verify by hand: "{s.get("value")}" {s.get("label", "")}')
-        for p in [s.get('pose')] if s.get('pose') else []:
+        for p in ([s.get('pose')] if s.get('pose') else []) + [q[0] for q in s.get('poses', [])]:
             if not (ASSETS / f'{p}.png').exists(): add(f'pose_s{i}', 'brand', 'fail', f'Pose "{p}" not in assets/nibble')
     add('spoken_claims', 'spec', 'review', 'Read every "say" line: spoken numbers and model names must match the screen and the catalog')
     cta = [s for s in scenes if s.get('type') == 'cta']
     disc = ' '.join((s.get('disclosure') or '') for s in cta)
     if cta:
         add('disclosure_on_screen', 'disclosure', 'pass' if DISCLOSURE_WORDS.search(disc) else 'fail', 'Affiliate disclosure shown on screen in the CTA', disc or None)
-        spoken = ' '.join(' '.join(s.get('say', [])) for s in cta)
+        spoken = ' '.join(' '.join(x if isinstance(x, str) else x.get('text', '') for x in s.get('say', [])) for s in cta)
         add('disclosure_spoken', 'disclosure', 'pass' if DISCLOSURE_WORDS.search(spoken) else 'warn', 'Disclosure also spoken', spoken or None)
     else:
         add('disclosure_on_screen', 'disclosure', 'review', 'No CTA scene: confirm the video has no commercial call to action or link')
-    voice = sb.get('voice')
-    add('voice', 'brand', 'pass' if voice == 'am_puck' else 'warn', 'Nibble voice (Kokoro am_puck)', voice, 'am_puck')
+    voice = sb.get('voice'); vo = sb.get('vo') or {}
+    if vo.get('provider'):
+        add('voice', 'brand', 'review', f'External voice {vo.get("provider")} "{vo.get("voice_name")}" ({vo.get("voice_id")}, {vo.get("model")}): confirm owner approval and the license row in assets/LICENSES.md', vo.get('voice_id'))
+    else:
+        add('voice', 'brand', 'pass' if voice == 'am_puck' else 'warn', 'Nibble voice (Kokoro am_puck)', voice, 'am_puck')
 
 # ---------- package: licenses, links, caption disclosure ----------
 def package(pkg_path, video):
