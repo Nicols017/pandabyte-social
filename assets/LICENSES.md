@@ -30,7 +30,8 @@ Status values: `ok` (license verified), `pending` (waiting for owner confirmatio
 
 | Asset | Source | License / rights | Added | Status |
 |---|---|---|---|---|
-| none yet | — | Videos ship voice-only until a licensed track is added here | — | — |
+| Sound effects whoosh, pop, tick, buzz, ding, slam (`studio/sfx.py`) | Synthesized at render time from NumPy code written for PandaByte (no samples, no downloaded files) | PandaByte original output; no third-party license involved | 2026-11-21 | ok |
+| Music | — | none: videos ship without a music track until a licensed track is added here | — | — |
 
 ## Tools (no license impact on output)
 
