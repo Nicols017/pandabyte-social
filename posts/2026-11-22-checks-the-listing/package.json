@@ -1,0 +1,105 @@
+{
+  "schema": "video-package/v1",
+  "slug": "2026-11-22-checks-the-listing",
+  "brief_id": "#30",
+  "revision": 1,
+  "created_at": "2026-11-22T13:10:58+00:00",
+  "video": {
+    "path": "2026-11-22-checks-the-listing.mp4",
+    "sha256": "c1386b29694fe1f9015e7031f4b1dc9e60febcbed8420f04c6fe86e39e536485",
+    "duration_s": 37.067
+  },
+  "storyboard": "storyboards/2026-11-22-checks-the-listing.json",
+  "platforms": [
+    "tiktok",
+    "instagram_reels"
+  ],
+  "caption": {
+    "tiktok": "Three red flags in this GPU listing. How many did you catch? Comment the number.\n\nThe listing is fictional. Nibble only counts brand-new cards with the memory and the condition spelled out.\n\nPandaByte may earn a commission from qualifying purchases. Rankings are never paid. AI voice and animation.\n#gpu #pcbuild #techtok #graphicscard",
+    "instagram_reels": "Three red flags in this GPU listing. How many did you catch? Comment the number.\n\nThe listing is fictional. If a listing hides the memory or the condition, Nibble walks away. Compare new GPUs at pandabyte.tech.\n\nPandaByte may earn a commission from qualifying purchases. Rankings are never paid. AI voice and animation.\n#gpu #pcbuild #pcgaming #graphicscard #techtips"
+  },
+  "links": [
+    {
+      "url": "https://pandabyte.tech",
+      "affiliate": false,
+      "program": "none",
+      "where": "on_screen"
+    }
+  ],
+  "disclosure": {
+    "on_screen": "PandaByte may earn a commission from qualifying purchases. Rankings are never paid.",
+    "spoken": true,
+    "caption": "PandaByte may earn a commission from qualifying purchases. Rankings are never paid."
+  },
+  "assets": [
+    {
+      "id": "nibble-poses",
+      "type": "mascot",
+      "path": "assets/nibble/",
+      "license": "PandaByte-owned (provisional)",
+      "ai_generated": true,
+      "notes": "Owner-approved provisional use (Canva art + derived poses). Rights confirmation still pending in assets/LICENSES.md."
+    },
+    {
+      "id": "voice-elevenlabs-dan",
+      "type": "voice",
+      "source_url": "https://elevenlabs.io",
+      "license": "ElevenLabs Starter plan (commercial license)",
+      "ai_generated": true,
+      "notes": "Voice 'Dan - Friendly, Relaxed & Real' (voice_id XA3P1cj7XJexe6Zq0ATX), model eleven_v4, generated 2026-11-22 on the owner's Starter plan. Synthetic voice, not a clone of a real person."
+    },
+    {
+      "id": "font-poppins-bold",
+      "type": "font",
+      "source_url": "https://fonts.google.com/specimen/Poppins",
+      "license": "OFL-1.1"
+    },
+    {
+      "id": "font-inter",
+      "type": "font",
+      "source_url": "https://fonts.google.com/specimen/Inter",
+      "license": "OFL-1.1"
+    },
+    {
+      "id": "sfx-studio",
+      "type": "sfx",
+      "path": "studio/sfx.py",
+      "license": "PandaByte-owned",
+      "notes": "Synthesized in code at render time; no samples."
+    },
+    {
+      "id": "drawn-props",
+      "type": "other",
+      "path": "studio/render.py",
+      "license": "PandaByte-owned",
+      "notes": "Generic GPU, boxes and the fictional listing are drawn in code; no logos, no retailer branding."
+    }
+  ],
+  "tools": [
+    {
+      "name": "ElevenLabs",
+      "license": "Starter plan, commercial use",
+      "paid": true,
+      "owner_approved": true
+    },
+    {
+      "name": "FFmpeg",
+      "paid": false
+    },
+    {
+      "name": "Pillow / NumPy",
+      "paid": false
+    }
+  ],
+  "ai_generated": {
+    "voice": true,
+    "visuals": true
+  },
+  "files": {
+    "cover": "cover.jpg",
+    "cover_small": "cover-270x480.jpg",
+    "srt": "2026-11-22-checks-the-listing.srt",
+    "transcript": "2026-11-22-checks-the-listing.transcript.txt"
+  },
+  "notes": "Fictional listing (no store, brand or price). Platform AI label must be switched on in TikTok and Instagram when scheduling."
+}
