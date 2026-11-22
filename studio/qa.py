@@ -265,8 +265,11 @@ def storyboard(sb_path, catalog):
         add('disclosure_spoken', 'disclosure', 'pass' if DISCLOSURE_WORDS.search(spoken) else 'warn', 'Disclosure also spoken', spoken or None)
     else:
         add('disclosure_on_screen', 'disclosure', 'review', 'No CTA scene: confirm the video has no commercial call to action or link')
-    voice = sb.get('voice')
-    add('voice', 'brand', 'pass' if voice == 'am_puck' else 'warn', 'Nibble voice (Kokoro am_puck)', voice, 'am_puck')
+    voice = sb.get('voice'); vo = sb.get('vo') or {}
+    if vo.get('provider'):
+        add('voice', 'brand', 'review', f'External voice {vo.get("provider")} "{vo.get("voice_name")}" ({vo.get("voice_id")}, {vo.get("model")}): confirm owner approval and the license row in assets/LICENSES.md', vo.get('voice_id'))
+    else:
+        add('voice', 'brand', 'pass' if voice == 'am_puck' else 'warn', 'Nibble voice (Kokoro am_puck)', voice, 'am_puck')
 
 # ---------- package: licenses, links, caption disclosure ----------
 def package(pkg_path, video):

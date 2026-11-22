@@ -9,6 +9,8 @@ Usage:
     python3 studio/render.py storyboards/<slug>.json            # full render
     python3 studio/render.py storyboards/<slug>.json --stills   # key frames + contact sheet + cover
     add --no-voice to time scenes from a words-per-second estimate (no Kokoro needed)
+    add --vo <dir> to use external voice files <dir>/<storyboard vo.prefix><scene#>.mp3 (or "audio" per scene);
+    line timing and captions then come from ffmpeg silencedetect. Kokoro stays the fallback.
 
 Requirements: pip install kokoro-onnx soundfile pillow numpy ; ffmpeg on PATH.
 Kokoro model files are downloaded on first use from the kokoro-onnx GitHub releases
@@ -29,7 +31,8 @@ CACHE = Path(os.environ.get('PANDABYTE_STUDIO_CACHE', Path.home() / '.cache' / '
 MODEL_URL = 'https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/'
 
 W, H, FPS = 1080, 1920, 30
-SR = 24000
+SR = 48000                  # audio buffers (Kokoro 24 kHz is resampled; external MP3s are decoded here)
+sfx.SR = SR
 SAFE_L, SAFE_R, SAFE_T, SAFE_B = 60, 960, 220, 1500  # platform safe area (see studio/qa.py)
 SAFE_W = SAFE_R - SAFE_L
 X0 = 84                     # content left margin: stays inside the safe area after the push-in
@@ -43,7 +46,7 @@ RED = (235, 64, 52)
 GREEN = (60, 200, 120)
 INK = (24, 24, 28)
 MAX_POSE_USES = 2           # acceptance: the same pose at most twice per video
-COVER_FRAMES = 8            # the cover is the first ~0.27 s of the video (and its first frame)
+COVER_FRAMES = 15           # owner cover rule: frames 0.0-0.5 s are the cover itself
 
 # ---------- fonts ----------
 def _font(candidates, size):
@@ -104,7 +107,7 @@ def narrate(lines, voice, speed, use_voice=True, gap=0.22, tail=0.3, lead=0.12):
         line = say_text(line)
         if use_voice:
             s, sr = kokoro().create(spoken, voice=voice, speed=speed, lang='en-us')
-            s = s.astype(np.float32)
+            s = resample(s.astype(np.float32), sr)
         else:  # layout preview: ~2.7 words/s
             s = np.zeros(int(SR * max(0.6, len(line.split()) / 2.7 / speed)), dtype=np.float32)
         d = len(s) / SR
@@ -113,6 +116,68 @@ def narrate(lines, voice, speed, use_voice=True, gap=0.22, tail=0.3, lead=0.12):
         nxt = lines[i + 1] if i + 1 < len(lines) else None
         pause = 0 if (isinstance(nxt, dict) and 'pause' in nxt) else (gap if nxt is not None else tail)
         parts.append(np.zeros(int(SR * pause), dtype=np.float32)); t += pause
+    return np.concatenate(parts), cues, starts, ends
+
+def resample(x, sr):
+    if sr == SR: return x
+    n = int(len(x) * SR / sr)
+    return np.interp(np.linspace(0, len(x) - 1, n), np.arange(len(x)), x).astype(np.float32)
+
+def load_audio(path):
+    raw = subprocess.run(['ffmpeg', '-loglevel', 'error', '-i', str(path), '-f', 'f32le', '-ac', '1', '-ar', str(SR), '-'],
+                         capture_output=True, check=True).stdout
+    return np.frombuffer(raw, dtype=np.float32).copy()
+
+def speech_segments(path, noise='-38dB', min_sil=0.2):
+    """[(start, end)] of speech inside an audio file, from ffmpeg silencedetect."""
+    log = subprocess.run(['ffmpeg', '-hide_banner', '-i', str(path), '-af', f'silencedetect=noise={noise}:d={min_sil}', '-f', 'null', '-'],
+                         capture_output=True, text=True).stderr
+    dur = float(re.search(r'Duration: (\d+):(\d+):([\d.]+)', log).group(3)) + 60 * int(re.search(r'Duration: (\d+):(\d+)', log).group(2))
+    sil_s = [float(x) for x in re.findall(r'silence_start: (-?[\d.]+)', log)]
+    sil_e = [float(x) for x in re.findall(r'silence_end: ([\d.]+)', log)]
+    sils = [(max(0.0, a), sil_e[i] if i < len(sil_e) else dur) for i, a in enumerate(sil_s)]
+    segs, t = [], 0.0
+    for a, b in sils:
+        if a - t > 0.05: segs.append((t, a))
+        t = b
+    if dur - t > 0.05: segs.append((t, dur))
+    return segs, dur
+
+def fit_segments(segs, lines):
+    """Groups speech segments so there is one per spoken line (merges across the shortest gaps)."""
+    segs = list(segs)
+    while len(segs) > len(lines):
+        k = min(range(len(segs) - 1), key=lambda i: segs[i + 1][0] - segs[i][1])
+        segs[k:k + 2] = [(segs[k][0], segs[k + 1][1])]
+    while len(segs) < len(lines):  # fewer pauses than lines: split the longest segment by text length
+        k = max(range(len(segs)), key=lambda i: segs[i][1] - segs[i][0])
+        a, b = segs[k]; m = a + (b - a) * 0.5
+        segs[k:k + 1] = [(a, m), (m, b)]
+    return segs
+
+def narrate_external(lines, path, tail=0.3):
+    """Scene narration from an external voice file (e.g. ElevenLabs). Line timing and captions come from
+    silencedetect; {"pause": s} items insert silence at that point (the pause is not in the file)."""
+    audio = load_audio(path)
+    spoken = [l for l in lines if not (isinstance(l, dict) and 'pause' in l)]
+    segs, dur = speech_segments(path)
+    if not segs: raise SystemExit(f'no speech found in {path}')
+    segs = fit_segments(segs, spoken)
+    # cut points between lines: middle of the silence after each line
+    cuts = [(segs[k][1] + segs[k + 1][0]) / 2 for k in range(len(segs) - 1)] + [dur]
+    parts, cues, starts, ends = [], [], [], []
+    t_out, src, k = 0.0, 0.0, 0
+    for line in lines:
+        if isinstance(line, dict) and 'pause' in line:
+            d = float(line['pause']); starts.append(t_out)
+            parts.append(np.zeros(int(SR * d), dtype=np.float32)); t_out += d; ends.append(t_out)
+            continue
+        a, b = segs[k]; cut = cuts[k]
+        shift = t_out - src
+        starts.append(a + shift); ends.append(b + shift)
+        cues += chunk_cues(say_text(line), a + shift, b + shift)
+        parts.append(audio[int(src * SR):int(cut * SR)]); t_out += cut - src; src = cut; k += 1
+    parts.append(np.zeros(int(SR * tail), dtype=np.float32))
     return np.concatenate(parts), cues, starts, ends
 
 def chunk_cues(line, start, end, max_words=4):
@@ -603,7 +668,7 @@ def render_frame(sc, t, ctx, sb):
 def render_cover(sb, first_sc, first_ctx):
     cv = sb['cover']
     words = re.sub(r'\*', '', cv['text']).split()
-    if len(words) > 4: raise SystemExit(f'cover text has {len(words)} words; the cover rule allows at most 4')
+    if not 3 <= len(words) <= 5: raise SystemExit(f'cover text has {len(words)} words; the owner cover rule asks for 3 to 5')
     frame = background(0).convert('RGBA')
     back = Image.new('RGBA', (W, H), (0, 0, 0, 0))
     ctx = dict(first_ctx, track=[], continues=True)
@@ -620,7 +685,10 @@ def render_cover(sb, first_sc, first_ctx):
     d = ImageDraw.Draw(frame)
     fnt = H1(cv.get('size', 168))
     y = cv.get('y', 250)
-    draw_rich(frame, SAFE_L, y, cv['text'], fnt, SAFE_W, int(cv.get('size', 168) * 1.04), center=True, stroke=14)
+    y_end = draw_rich(frame, SAFE_L, y, cv['text'], fnt, SAFE_W, int(cv.get('size', 168) * 1.04), center=True, stroke=14)
+    grid_top, grid_bottom = (H - 1350) // 2, (H + 1350) // 2   # Instagram grid crops 9:16 to the central 4:5
+    if y < grid_top or y_end > grid_bottom or y_end > H - 250:
+        raise SystemExit(f'cover text {y}-{y_end}px is outside the central 1080x1350 area ({grid_top}-{grid_bottom})')
     p = pose(cv['pose']); h = cv.get('pose_height', 900)
     p = p.resize((int(p.width * h / p.height), h), Image.LANCZOS)
     frame.alpha_composite(p, (int(cv.get('pose_x', W // 2) - p.width / 2), int(cv.get('pose_bottom', 1500) - h)))
@@ -639,10 +707,10 @@ def check_storyboard(sb, tracks):
             uses[p] = uses.get(p, 0) + 1
             prev = p
         if tr: prev = tr[-1][0]
-    if sb.get('cover'):
+    if sb.get('cover'):  # owner rule: the cover pose is exclusive to the cover
         cp = sb['cover']['pose']
-        first = tracks[0][0][0] if tracks and tracks[0] else None
-        if cp != first: uses[cp] = uses.get(cp, 0) + 1
+        if cp in uses: errs.append(f'cover pose "{cp}" is also used in the scenes; the cover needs its own pose')
+        uses[cp] = uses.get(cp, 0) + 1
     over = {p: n for p, n in uses.items() if n > MAX_POSE_USES}
     if over: errs.append(f'pose used more than {MAX_POSE_USES}x: {over}')
     for i, sc in enumerate(sb['scenes']):
@@ -650,11 +718,21 @@ def check_storyboard(sb, tracks):
             errs.append(f'scene {i + 1}: type "{sc["type"]}" not supported')
     return errs, uses
 
-def build(sb, use_voice):
+def scene_audio(sb, sc, i, vo_dir):
+    if sc.get('audio'): return Path(sc['audio'])
+    if vo_dir and sb.get('vo', {}).get('prefix'):
+        p = Path(vo_dir) / f"{sb['vo']['prefix']}{i + 1}.mp3"
+        if p.exists(): return p
+        raise SystemExit(f'missing voice file {p}')
+    return None
+
+def build(sb, use_voice, vo_dir=None):
     voice, speed = sb.get('voice', 'am_puck'), sb.get('speed', 1.0)
     plan, offset, prev_type = [], 0.0, None
     for i, sc in enumerate(sb['scenes']):
-        audio, cues, starts, ends = narrate(sc['say'], voice, speed, use_voice)
+        ext = scene_audio(sb, sc, i, vo_dir)
+        if ext: audio, cues, starts, ends = narrate_external(sc['say'], ext)
+        else: audio, cues, starts, ends = narrate(sc['say'], voice, speed, use_voice)
         nframes = max(1, round(len(audio) / SR * FPS)); dur = nframes / FPS
         audio = np.pad(audio, (0, max(0, int(dur * SR) - len(audio))))[:int(dur * SR)]
         ctx = {'dur': dur, 'cues': cues, 'starts': starts, 'ends': ends, 'offset': offset,
@@ -672,7 +750,7 @@ def sfx_events(plan):
             if j or (i and ctx['track']): ev.append((o + max(0, s) + (0.02 if j else 0.12), 'pop'))
         if sc.get('countdown'):
             c0 = at(sc['countdown'].get('at'), ctx, 1.2)
-            for k in range(int(math.ceil(float(sc['countdown'].get('seconds', 2.0))))): ev.append((o + c0 + k, 'tick'))
+            for k in range(int(round(float(sc['countdown'].get('seconds', 2.0)) * 2))): ev.append((o + c0 + k * 0.5, 'tick'))
         for f in sc.get('flags', []):
             f0 = at(f.get('at'), ctx, 0.3)
             if f0 > 0.01 or not ctx['continues']: ev.append((o + f0 + 0.25, 'ding' if f.get('kind') == 'good' else 'buzz'))
@@ -700,7 +778,7 @@ def contact_sheet(tiles, title_text, path):
     sheet.save(path)
 
 # ---------- render ----------
-def render(sb_path, stills=False, use_voice=True):
+def render(sb_path, stills=False, use_voice=True, vo_dir=None):
     sb = json.loads(Path(sb_path).read_text())
     slug = sb['slug']
     out = ROOT / 'build' / slug; out.mkdir(parents=True, exist_ok=True)
@@ -710,7 +788,7 @@ def render(sb_path, stills=False, use_voice=True):
             if not stills: raise
             print('Kokoro unavailable, timing from estimate:', e); use_voice = False
     t_start = time.time()
-    plan = build(sb, use_voice)
+    plan = build(sb, use_voice, vo_dir)
     errs, uses = check_storyboard(sb, [ctx['track'] for _, ctx, _, _ in plan])
     total = sum(n for *_, n in plan) / FPS
     print(f'{slug}: {total:.1f}s, {len(plan)} scenes, poses {uses}')
@@ -718,6 +796,10 @@ def render(sb_path, stills=False, use_voice=True):
         for e in errs: print('ERROR:', e)
         raise SystemExit(1)
     cover = render_cover(sb, plan[0][0], plan[0][1]) if sb.get('cover') else None
+    timing = {'slug': slug, 'duration_s': round(total, 3), 'voice_files': [str(scene_audio(sb, sc, i, vo_dir) or '') for i, sc in enumerate(sb['scenes'])],
+              'cues': [[round(ctx['offset'] + a, 3), round(ctx['offset'] + b, 3), txt] for sc, ctx, _, _ in plan for a, b, txt in ctx['cues']],
+              'scenes': [{'type': sc['type'], 'start': round(ctx['offset'], 3), 'dur': round(ctx['dur'], 3), 'poses': ctx['track']} for sc, ctx, _, _ in plan]}
+    (out / 'timing.json').write_text(json.dumps(timing, indent=1))
     if cover:
         cover.save(out / 'cover.jpg', quality=92); cover.resize((270, 480), Image.LANCZOS).save(out / 'cover-270x480.jpg', quality=92)
     if stills:
@@ -729,7 +811,9 @@ def render(sb_path, stills=False, use_voice=True):
                 img.save(out / f'still-{i + 1:02d}-{k}.jpg', quality=90)
                 tiles.append((img, f'{ctx["offset"] + tt:4.1f}s  s{i + 1} {sc["type"]}'))
         t0 = time.time(); render_frame(plan[0][0], 1.0, plan[0][1], sb); ms = (time.time() - t0)
-        contact_sheet(tiles, f'{slug}  |  {total:.1f}s  |  {"Kokoro am_puck timing" if use_voice else "estimated timing (no voice)"}', out / 'contact.png')
+        vo = sb.get('vo') or {}
+        voice_label = (f"{vo.get('provider')} voice timing" if vo_dir and vo.get('prefix') else ("Kokoro am_puck timing" if use_voice else "estimated timing (no voice)"))
+        contact_sheet(tiles, f'{slug}  |  {total:.1f}s  |  {voice_label}', out / 'contact.png')
         print(f'stills + contact sheet in {out} (~{ms * 1000:.0f} ms/frame -> full render ~{ms * total * FPS / 60:.1f} min of frames)')
         return out
     scene_files = []
@@ -761,4 +845,6 @@ def render(sb_path, stills=False, use_voice=True):
     print('done:', final, f'{total:.1f}s in {time.time() - t_start:.0f}s')
 
 if __name__ == '__main__':
-    render(sys.argv[1], stills='--stills' in sys.argv, use_voice='--no-voice' not in sys.argv)
+    args = sys.argv[1:]
+    vo = args[args.index('--vo') + 1] if '--vo' in args else None
+    render(args[0], stills='--stills' in args, use_voice='--no-voice' not in args, vo_dir=vo)

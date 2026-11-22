@@ -7,12 +7,12 @@
   "notes": "The listing is FICTIONAL (drawn in studio/render.py): no real store, retailer brand, logo or price. Loop: the last line ('Now, look again:') runs into the first ('Three red flags in this listing').",
   "cover": {
     "text": "3 RED *FLAGS?*",
-    "pose": "suspicious",
-    "y": 240,
+    "pose": "surprised",
+    "y": 300,
     "size": 176,
-    "pose_height": 860,
-    "pose_x": 700,
-    "pose_bottom": 1500
+    "pose_height": 770,
+    "pose_x": 620,
+    "pose_bottom": 1640
   },
   "scenes": [
     {
@@ -54,7 +54,7 @@
       "title": "Red flag *1*: the condition.",
       "poses": [
         [
-          "surprised",
+          "pointing",
           0
         ]
       ],
@@ -84,6 +84,10 @@
         [
           "thinking",
           0
+        ],
+        [
+          "gpu",
+          "@1"
         ]
       ],
       "listing": {
@@ -211,5 +215,95 @@
         "Now, look again:"
       ]
     }
-  ]
+  ],
+  "vo": {
+    "provider": "elevenlabs",
+    "voice_name": "Dan - Friendly, Relaxed & Real",
+    "voice_id": "XA3P1cj7XJexe6Zq0ATX",
+    "model": "eleven_v4",
+    "plan": "Starter (commercial license)",
+    "generated": "2026-11-22",
+    "prefix": "v1s"
+  },
+  "package": {
+    "brief_id": "#30",
+    "platforms": [
+      "tiktok",
+      "instagram_reels"
+    ],
+    "links": [
+      {
+        "url": "https://pandabyte.tech",
+        "affiliate": false,
+        "program": "none",
+        "where": "on_screen"
+      }
+    ],
+    "caption_disclosure": "PandaByte may earn a commission from qualifying purchases. Rankings are never paid.",
+    "assets": [
+      {
+        "id": "nibble-poses",
+        "type": "mascot",
+        "path": "assets/nibble/",
+        "license": "PandaByte-owned (provisional)",
+        "ai_generated": true,
+        "notes": "Owner-approved provisional use (Canva art + derived poses). Rights confirmation still pending in assets/LICENSES.md."
+      },
+      {
+        "id": "voice-elevenlabs-dan",
+        "type": "voice",
+        "source_url": "https://elevenlabs.io",
+        "license": "ElevenLabs Starter plan (commercial license)",
+        "ai_generated": true,
+        "notes": "Voice 'Dan - Friendly, Relaxed & Real' (voice_id XA3P1cj7XJexe6Zq0ATX), model eleven_v4, generated 2026-11-22 on the owner's Starter plan. Synthetic voice, not a clone of a real person."
+      },
+      {
+        "id": "font-poppins-bold",
+        "type": "font",
+        "source_url": "https://fonts.google.com/specimen/Poppins",
+        "license": "OFL-1.1"
+      },
+      {
+        "id": "font-inter",
+        "type": "font",
+        "source_url": "https://fonts.google.com/specimen/Inter",
+        "license": "OFL-1.1"
+      },
+      {
+        "id": "sfx-studio",
+        "type": "sfx",
+        "path": "studio/sfx.py",
+        "license": "PandaByte-owned",
+        "notes": "Synthesized in code at render time; no samples."
+      },
+      {
+        "id": "drawn-props",
+        "type": "other",
+        "path": "studio/render.py",
+        "license": "PandaByte-owned",
+        "notes": "Generic GPU, boxes and the fictional listing are drawn in code; no logos, no retailer branding."
+      }
+    ],
+    "tools": [
+      {
+        "name": "ElevenLabs",
+        "license": "Starter plan, commercial use",
+        "paid": true,
+        "owner_approved": true
+      },
+      {
+        "name": "FFmpeg",
+        "paid": false
+      },
+      {
+        "name": "Pillow / NumPy",
+        "paid": false
+      }
+    ],
+    "caption": {
+      "tiktok": "Three red flags in this GPU listing. How many did you catch? Comment the number.\n\nThe listing is fictional. Nibble only counts brand-new cards with the memory and the condition spelled out.\n\nPandaByte may earn a commission from qualifying purchases. Rankings are never paid. AI voice and animation.\n#gpu #pcbuild #techtok #graphicscard",
+      "instagram_reels": "Three red flags in this GPU listing. How many did you catch? Comment the number.\n\nThe listing is fictional. If a listing hides the memory or the condition, Nibble walks away. Compare new GPUs at pandabyte.tech.\n\nPandaByte may earn a commission from qualifying purchases. Rankings are never paid. AI voice and animation.\n#gpu #pcbuild #pcgaming #graphicscard #techtips"
+    },
+    "notes": "Fictional listing (no store, brand or price). Platform AI label must be switched on in TikTok and Instagram when scheduling."
+  }
 }
